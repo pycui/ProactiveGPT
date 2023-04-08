@@ -1,0 +1,5 @@
+discord.py
+python-dotenv
+discord-ext-commands
+asyncio
+openai
