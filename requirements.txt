@@ -3,3 +3,4 @@ python-dotenv
 discord-ext-commands
 asyncio
 openai
+questionary

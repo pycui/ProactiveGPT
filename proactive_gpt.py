@@ -1,8 +1,5 @@
 import discord
 import os
-from discord.ext import commands
-import asyncio
-import datetime
 import openai
 import questionary
 from questionary import ValidationError
@@ -11,12 +8,18 @@ from gpt_gpt import GptBot
 intents = discord.Intents.default()
 intents.message_content = True
 
-messages = []
-
-default_task_prompt = ("You are a personal fitness trainer now. I want to have a 7 day workout plan, using the time in the morning "
-                   "(9-10AM) and evening (7PM-10PM) for exercises and activities. The workout should be not be too heavy. "
-                   "I will start the plan tomorrow (04/06/2023). Can you help me make a plan? The plan should be detailed, with the date and time of each activities. ")
-loop_prompt_template = ("Now, I will start following your plan and would like you to remind on what to do at current time. A scheduler will help provide current time info to you. He will always start his words with \"SCHEDULER: \", followed by a date and time, by roughly once per every {cadence} hour.  If I should be doing an activity at that time, you should answer with: \"Exercise Time!\", followed by the activity. Otherwise, reply with \"Nothing to do now\". If you understand, please say OK.")
+default_task_prompt = ("You are a personal fitness trainer now. I want to have a 7 day workout "
+                       "plan, using the time in the morning (9-10AM) and evening (7PM-10PM) for "
+                       "exercises and activities. The workout should be not be too heavy. "
+                       "I will start the plan tomorrow (04/06/2023). Can you help me make a plan? "
+                       "The plan should be detailed, with the date and time of each activities. ")
+loop_prompt_template = (
+    "Now, I will start following your plan and would like you to remind on what to do at current time. "
+    "A scheduler will help provide current time info to you. He will always start his words with "
+    "\"SCHEDULER: \", followed by a date and time, by roughly once per every {cadence} hour. "
+    "If I should be doing an activity at that time, you should answer with: \"Exercise Time!\", "
+    "followed by the activity. Otherwise, reply with \"Nothing to do now\". If you understand, "
+    "please say OK.")
 
 
 def cadence_validator(value: str):
@@ -48,7 +51,9 @@ def main():
         return
 
     # Enter API key.
-    api_token = questionary.text("Please enter your OpenAI API token. \nIf empty, I will use the OPENAI_API_KEY environment variable:").ask()
+    api_token = questionary.text("Please enter your OpenAI API token. \n"
+                                 "If empty, I will use the OPENAI_API_KEY "
+                                 "environment variable:").ask()
 
     if api_token:
         print("Using user-provided API key.")
@@ -58,7 +63,9 @@ def main():
         openai.api_key = os.environ.get("GPT_KEY")
 
     # Enter discord bot token.
-    discord_token = questionary.text("Please enter your Discord bot token. \nIf empty, I will use the DISCORD_BOT_TOKEN environment variable:").ask()
+    discord_token = questionary.text("Please enter your Discord bot token. \n"
+                                     "If empty, I will use the DISCORD_BOT_TOKEN "
+                                     "environment variable:").ask()
     if discord_token:
         print("Using user-provided Discord bot token.")
     else:
@@ -66,22 +73,26 @@ def main():
         discord_token = os.environ.get("DISCORD_BOT_TOKEN")
 
     # Enter cadence.
-    cadence = questionary.text("Please enter the cadence of your GPT's proactiveness (in hours, cron format will be supported soon):",
+    cadence = questionary.text("Please enter the cadence of your GPT's proactiveness\n"
+                               "(in hours, cron format will be supported soon):",
                                validate=cadence_validator, default="1").ask()
 
     # Enter task prompt.
-    task_prompt = questionary.text("Please enter your task prompt to GPT:", default=default_task_prompt).ask()
+    task_prompt = questionary.text("Please enter your task prompt to GPT:",
+                                   default=default_task_prompt).ask()
     loop_prompt = loop_prompt_template.format(cadence=cadence)
 
     # Enter loop prompt.
-    loop_prompt = questionary.text("Please enter your loop prompt to GPT:", default=loop_prompt).ask()
+    loop_prompt = questionary.text("Please enter your loop prompt to GPT:",
+                                   default=loop_prompt).ask()
 
     # Enter user ID.
-    user_id = questionary.text("Please enter the discord user ID to send the message to:").ask()
+    user_id = questionary.text(
+        "Please enter the discord user ID to send the message to:").ask()
 
     # Replace "!" with the desired prefix for your bot commands.
-    bot = GptBot(model, task_prompt, loop_prompt, cadence, user_id, command_prefix="!", intents=intents,
-                    heartbeat_timeout=10000)
+    bot = GptBot(model, task_prompt, loop_prompt, cadence, user_id,
+                 command_prefix="!", intents=intents, heartbeat_timeout=10000)
 
     bot.run(discord_token)
 

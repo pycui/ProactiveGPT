@@ -5,8 +5,14 @@ from typing import List
 from discord.ext import commands
 
 
-def split_long_string(text, max_length=2000):
-    """Split a long string into a list of strings with a maximum length."""
+# Discord max message length.
+MAX_MESSAGE_LENGTH = 2000
+
+
+def split_long_string(text, max_length=MAX_MESSAGE_LENGTH):
+    """
+    Split a long string into a list of strings with a maximum length.
+    Useful for sending message to discord which has character limit."""
     words = text.split()
     result = []
     current_line = ""
@@ -26,7 +32,7 @@ def split_long_string(text, max_length=2000):
 
 def send_message_to_chatgpt(messages: List[str], message: str, model: str):
     """
-    send message to OpenAI chat API, get response from OpenAI chat API, and send response to user.
+    Send message to OpenAI chat API, get response, and send response to user.
     """
     messages.append({"content": message, "role": "user"})
     response = openai.ChatCompletion.create(
@@ -42,6 +48,9 @@ def send_message_to_chatgpt(messages: List[str], message: str, model: str):
 
 
 class GptBot(commands.Bot):
+    """
+    A discord bot that can interact with GPT.
+    """
     def __init__(self, model, task_prompt, loop_prompt, cadence, user_id, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.model = model
@@ -52,20 +61,22 @@ class GptBot(commands.Bot):
         self.messages = []
         self._commands()
 
-    async def send_daily_message(self):
+    async def send_periodic_message(self):
         loop = asyncio.get_event_loop()
 
         user = await self.fetch_user(self.user_id)
         if user is not None:
             await user.send(f"Your initial instruction to ChatGPT: {self.task_prompt}")
             await user.send(f"ChatGPT is now generating the plan for you...")
-            gpt_response = await loop.run_in_executor(None, send_message_to_chatgpt, self.messages, self.task_prompt, self.model)
-            if (len(gpt_response) > 2000):
+            gpt_response = await loop.run_in_executor(
+                None, send_message_to_chatgpt, self.messages, self.task_prompt, self.model)
+            if (len(gpt_response) > MAX_MESSAGE_LENGTH):
                 for line in split_long_string(gpt_response):
                     await user.send(line)
             else:
                 await user.send(gpt_response)
-            _ = await loop.run_in_executor(None, send_message_to_chatgpt, self.messages, self.loop_prompt, self.model)
+            _ = await loop.run_in_executor(
+                None, send_message_to_chatgpt, self.messages, self.loop_prompt, self.model)
 
             while True:
                 now = datetime.datetime.now()
@@ -77,17 +88,17 @@ class GptBot(commands.Bot):
                 await asyncio.sleep(seconds_till_next_run)
 
                 time = datetime.datetime.now().strftime("%m/%d/%Y %H:%M:%S")
-                gpt_response = await loop.run_in_executor(None, send_message_to_chatgpt, self.messages, f"SCHEDULER: {time}", self.model)
+                gpt_response = await loop.run_in_executor(
+                    None, send_message_to_chatgpt, self.messages, f"SCHEDULER: {time}", self.model)
                 if "nothing to do now" in gpt_response.lower():
                     continue
                 await user.send(gpt_response)
-
 
     async def on_ready(self):
         print(f"Using task_prompt: {self.task_prompt}")
         print(f"Using loop_prompt: {self.loop_prompt}")
         print(f"{self.user.name} has connected to Discord!")
-        asyncio.create_task(self.send_daily_message())
+        asyncio.create_task(self.send_periodic_message())
 
     def _commands(self):
         @self.command(name="hello", help="Says hello to the user.")
@@ -101,5 +112,6 @@ class GptBot(commands.Bot):
         @self.command(name="g", help="Say something to chatgpt.")
         async def g(ctx, *, message: str):
             loop = asyncio.get_event_loop()
-            gpt_response = await loop.run_in_executor(None, send_message_to_chatgpt, ctx.bot.messages, message, ctx.bot.model)
+            gpt_response = await loop.run_in_executor(
+                None, send_message_to_chatgpt, ctx.bot.messages, message, ctx.bot.model)
             await ctx.send(gpt_response)
