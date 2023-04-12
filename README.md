@@ -90,7 +90,7 @@ python proactive_gpt.py
 
 ## Configuration
 
-You can customize the behavior of ProactiveGPT by modifying the `config.yaml` file. This file contains settings for interaction frequency, response generation, and more.
+You can customize the behavior of ProactiveGPT by adjusting your answers to the questions at the beginning of program over shell. We will provide more customization options soon!
 
 ## Contributing
 
