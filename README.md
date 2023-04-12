@@ -27,6 +27,48 @@ To get started with ProactiveGPT, simply clone this repository and follow the in
 git clone https://github.com/bcstyle/ProactiveGPT.git
 ```
 
+## Prerequisites
+
+Before you begin setting up this project, please ensure you have completed the following tasks:
+
+### 1. Prepare OpenAI API Token
+
+This application utilizes the OpenAI API to access its powerful language model capabilities. In order to use the OpenAI API, you will need to obtain an API token.
+
+To get your OpenAI API token, follow these steps:
+
+1. Go to the [OpenAI website](https://beta.openai.com/signup/) and sign up for an account if you haven't already.
+2. Once you're logged in, navigate to the [API keys page](https://beta.openai.com/account/api-keys).
+3. Generate a new API key by clicking on the "Create API Key" button.
+4. Copy the API key and store it safely, as you will need it later during the setup process.
+
+### 2. Create a Discord Bot and Get a Discord Bot Token
+
+To integrate our application with Discord, you will need to create a Discord bot and obtain a bot token.
+
+Follow these steps to create a Discord bot and get its token:
+
+1. Go to the [Discord Developer Portal](https://discord.com/developers/applications) and log in.
+2. Click on the "New Application" button in the top right corner and give your application a name.
+3. Navigate to the "Bot" tab in the left sidebar and click on "Add Bot."
+4. Confirm the action by clicking on "Yes, do it!" in the pop-up window.
+5. In the "Bot" section, you will find the "Token" field. Click on "Copy" to save the bot token to your clipboard. Keep this token secure, as you will need it later during setup.
+
+### 3. Get Your Discord User ID
+
+In order to grant the bot the necessary permissions, you will need to provide your Discord User ID.
+
+Follow these steps to obtain your Discord User ID:
+
+1. Launch Discord and log in to your account.
+2. Open your user settings by clicking on the gear icon near your username in the bottom left corner.
+3. Navigate to the "Advanced" tab in the left sidebar.
+4. Toggle the "Developer Mode" switch to enable it.
+5. Close the user settings and return to your Discord server or any chat.
+6. Right-click on your username in the member list or on one of your messages, and then click on "Copy ID" to save your User ID to your clipboard.
+
+With these prerequisites completed, you are now ready to proceed with the installation and configuration of the project. In the next sections, you will learn how to set up the required environment variables and deploy the bot to your Discord server.
+
 ## Installation
 
 1. Set up a Python virtual environment:

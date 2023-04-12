@@ -13,7 +13,7 @@ def split_long_string(text, max_length=MAX_MESSAGE_LENGTH):
     """
     Split a long string into a list of strings with a maximum length.
     Useful for sending message to discord which has character limit."""
-    words = text.split()
+    words = text.split(' ')
     result = []
     current_line = ""
 
@@ -66,7 +66,7 @@ class GptBot(commands.Bot):
 
         user = await self.fetch_user(self.user_id)
         if user is not None:
-            await user.send(f"Your initial instruction to ChatGPT: {self.task_prompt}")
+            await user.send(f"Your initial instruction to ChatGPT: ```{self.task_prompt}```")
             await user.send(f"ChatGPT is now generating the plan for you...")
             gpt_response = await loop.run_in_executor(
                 None, send_message_to_chatgpt, self.messages, self.task_prompt, self.model)
