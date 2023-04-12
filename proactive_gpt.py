@@ -3,7 +3,7 @@ import os
 import openai
 import questionary
 from questionary import ValidationError
-from gpt_gpt import GptBot
+from gpt_bot import GptBot
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -11,7 +11,7 @@ intents.message_content = True
 default_task_prompt = ("You are a personal fitness trainer now. I want to have a 7 day workout "
                        "plan, using the time in the morning (9-10AM) and evening (7PM-10PM) for "
                        "exercises and activities. The workout should be not be too heavy. "
-                       "I will start the plan tomorrow (04/06/2023). Can you help me make a plan? "
+                       "I will start the plan tomorrow (04/12/2023). Can you help me make a plan? "
                        "The plan should be detailed, with the date and time of each activities. ")
 loop_prompt_template = (
     "Now, I will start following your plan and would like you to remind on what to do at current time. "
