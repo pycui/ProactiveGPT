@@ -3,6 +3,10 @@ import datetime
 import openai
 from typing import List
 from discord.ext import commands
+import logging
+import sys
+
+logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s:%(message)s', stream=sys.stdout)
 
 
 # Discord max message length.
@@ -34,6 +38,7 @@ def send_message_to_chatgpt(messages: List[str], message: str, model: str):
     """
     Send message to OpenAI chat API, get response, and send response to user.
     """
+    logging.info(f"Sending message to OpenAI: {message}")
     messages.append({"content": message, "role": "user"})
     response = openai.ChatCompletion.create(
         model=model,
@@ -44,6 +49,7 @@ def send_message_to_chatgpt(messages: List[str], message: str, model: str):
 
     gpt_response = response.choices[0].message.content
     messages.append({"content": gpt_response, "role": "system"})
+    logging.info(f"Received response from OpenAI: {gpt_response}")
     return gpt_response
 
 
