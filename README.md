@@ -1,16 +1,17 @@
 # ProactiveGPT
 
 ![logo](logo.png)
+**Tired of asking ChatGPT by yourself? Let ChatGPT find you proactively!**
 
-ProactiveGPT is an advanced adaptation of OpenAI's GPT architecture that brings a new level of interactivity to conversational AI by proactively engaging with the user. It offers reminders, check-ins, tips, and inquiries to make the AI experience more dynamic and tailored to the user's needs. ProactiveGPT is particularly beneficial for coaching, personal assistance, and companionship use cases, providing support and guidance as needed. Written in Python, ProactiveGPT is a versatile and customizable solution for your AI needs.
+ProactiveGPT is a framework on top of OpenAI's ChatGPT models that brings a new level of interactivity to conversational AI by proactively engaging with the user. It can offer reminders, check-ins, tips, and inquiries to make the AI experience more dynamic and tailored to the user's needs. ProactiveGPT is particularly beneficial for coaching, personal assistance, and companionship use cases, providing support and guidance as needed. Written in Python, ProactiveGPT is a versatile and customizable solution for your AI needs.
 
 ## Features
 
 - **Proactive Interaction**: ProactiveGPT goes beyond the traditional AI-user interaction by initiating conversations and offering timely assistance to users.
-- **Reminders**: Keep track of important tasks and events with ProactiveGPT's built-in reminder system.
+- **Reminders**: Keep track of important tasks and events with ProactiveGPT's customizable reminder options.
 - **Check-ins**: Receive regular check-ins to stay on track with your goals and progress.
 - **Tips**: Get relevant and personalized tips based on your preferences and objectives.
-- **Inquiries**: ProactiveGPT proactively asks questions to better understand your needs and provide targeted assistance.
+- **Inquiries**: ProactiveGPT can proactively ask questions to better understand your needs and provide targeted assistance.
 - **Customization**: Tailor ProactiveGPT's behavior and responses to suit your unique requirements and preferences.
 
 ## Use Cases
@@ -87,6 +88,18 @@ pip install -r requirements.txt
 ```
 python proactive_gpt.py
 ```
+
+4. Follow the questionnaire to customize your request.
+An example with personal training coach is provided as default.
+
+5. ProactiveGPT is running!
+If you want to interact with it ad-hoc, you can use the !g discord command:
+```
+!g tell me how many exercise hours have you planned for me in total?
+```
+
+## Example Use Case
+We provide an example of personal training coach use case in the default prompts. ProactiveGPT creates the entire training plan, with detailed time and activities. Then it will remind you with any planned exercise in real-time, per your requested cadence.
 
 ## Configuration
 
