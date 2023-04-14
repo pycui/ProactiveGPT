@@ -61,6 +61,12 @@ class GptBot(commands.Bot):
         self.messages = []
         self._commands()
 
+    def retract_last_n_message(self, n: int):
+        """
+        Retract last n messages.
+        """
+        self.messages = self.messages[:-n]
+
     async def send_periodic_message(self):
         loop = asyncio.get_event_loop()
 
@@ -91,6 +97,8 @@ class GptBot(commands.Bot):
                 gpt_response = await loop.run_in_executor(
                     None, send_message_to_chatgpt, self.messages, f"SCHEDULER: {time}", self.model)
                 if "nothing to do now" in gpt_response.lower():
+                    # Do not keep these messages to save token length.
+                    self.retract_last_n_message(2)
                     continue
                 await user.send(gpt_response)
 
