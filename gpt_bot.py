@@ -5,8 +5,10 @@ from typing import List
 from discord.ext import commands
 import logging
 import sys
+from tenacity import retry, wait_random_exponential, stop_after_attempt
 
-logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s:%(message)s', stream=sys.stdout)
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s %(levelname)s:%(message)s', stream=sys.stdout)
 
 
 # Discord max message length.
@@ -40,12 +42,17 @@ def send_message_to_chatgpt(messages: List[str], message: str, model: str):
     """
     logging.info(f"Sending message to OpenAI: {message}")
     messages.append({"content": message, "role": "user"})
-    response = openai.ChatCompletion.create(
-        model=model,
-        messages=messages,
-        max_tokens=2048,  # Adjust the number of tokens as needed
-        temperature=0.8,  # Adjust the creativity level
-    )
+
+    # define an inline function to call OpenAI Chat API with retry decorator
+    @retry(wait=wait_random_exponential(multiplier=1, max=10), stop=stop_after_attempt(3))
+    def call_openai_chat_api(model, messages):
+        return openai.ChatCompletion.create(
+            model=model,
+            messages=messages,
+            max_tokens=2048,  # Adjust the number of tokens as needed
+            temperature=0.8,  # Adjust the creativity level
+        )
+    response = call_openai_chat_api(model, messages)
 
     gpt_response = response.choices[0].message.content
     messages.append({"content": gpt_response, "role": "system"})
@@ -67,7 +74,7 @@ class GptBot(commands.Bot):
         self.messages = []
         self._commands()
 
-    def retract_last_n_message(self, n: int):
+    def _retract_last_n_message(self, n: int):
         """
         Retract last n messages.
         """
@@ -104,7 +111,7 @@ class GptBot(commands.Bot):
                     None, send_message_to_chatgpt, self.messages, f"SCHEDULER: {time}", self.model)
                 if "nothing to do now" in gpt_response.lower():
                     # Do not keep these messages to save token length.
-                    self.retract_last_n_message(2)
+                    self._retract_last_n_message(2)
                     continue
                 await user.send(gpt_response)
 

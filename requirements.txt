@@ -4,3 +4,4 @@ discord-ext-commands
 asyncio
 openai
 questionary
+tenacity
