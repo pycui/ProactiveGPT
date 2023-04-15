@@ -72,6 +72,7 @@ class GptBot(commands.Bot):
         self.cadence = cadence
         self.user_id = user_id
         self.messages = []
+        self.initialized = False
         self._commands()
 
     def _retract_last_n_message(self, n: int):
@@ -116,10 +117,13 @@ class GptBot(commands.Bot):
                 await user.send(gpt_response)
 
     async def on_ready(self):
+        if self.initialized:
+            return
         print(f"Using task_prompt: {self.task_prompt}")
         print(f"Using loop_prompt: {self.loop_prompt}")
         print(f"{self.user.name} has connected to Discord!")
         asyncio.create_task(self.send_periodic_message())
+        self.initialized = True
 
     def _commands(self):
         @self.command(name="hello", help="Says hello to the user.")
